@@ -1,0 +1,34 @@
+body {
+  background-color: rgb(31, 32, 46);
+  color: rgb(220, 219, 205);
+}
+
+.map-container {
+  background-color: rgb(49, 51, 68);
+  width: 600px;
+  height: 600px;
+}
+
+.map-row {
+  width: 600px;
+  height: 60px;
+}
+
+.map-cell {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  outline: 1px solid gray;
+}
+
+.map-cell.plains {
+  background-color: green;
+}
+
+.map-cell.mountain {
+  background-color: gray;
+}
+
+.map-cell.water {
+  background-color: blue;
+}

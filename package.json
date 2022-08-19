@@ -14,5 +14,8 @@
   },
   "scripts": {
     "build": "webpack"
+  },
+  "dependencies": {
+    "simplex-noise": "^4.0.0"
   }
 }
