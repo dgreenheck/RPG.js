@@ -1,20 +1,19 @@
-import { WorldMap, HTMLWorldMapElement } from "./worldMap";
+import { MapSize, WorldMap } from "./worldMap";
 
 const root = document.createElement('div');
 document.body.appendChild(root);
 
-export function generateMap() {
-  // Remove the existing map
+const map = new WorldMap(MapSize.Large, 0.05);
+renderMap();
+
+export function renderMap() {
+  // Hook up the on view update method to re-render the map
+  // This is called when the user pans the map
+  map.onViewUpdate = () => { renderMap() };
+
   if (document.getElementById('map')) {
-    root.removeChild(document.getElementById('map'));
+    root.replaceChild(map.view(), document.getElementById('map'));
+  } else {
+    root.appendChild(map.view());
   }
-  const map = new WorldMap(10, 10, 0.2);
-  root.appendChild(HTMLWorldMapElement(map));
 }
-
-const generateMapButton = document.createElement('button');
-generateMapButton.innerHTML = 'Generate Map';
-generateMapButton.addEventListener('click', generateMap);
-root.appendChild(generateMapButton);
-
-generateMap();
