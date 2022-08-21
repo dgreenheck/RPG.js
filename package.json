@@ -16,6 +16,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "alea": "^1.0.1",
     "simplex-noise": "^4.0.0"
   }
 }

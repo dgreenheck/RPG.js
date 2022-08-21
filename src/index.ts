@@ -1,9 +1,20 @@
-import { MapSize, WorldMap } from "./worldMap";
+import { MapSize } from "./models/worldMap";
+import { WorldMapView } from "./views/worldMapView";
 
+// Setup root element that will hold all other elements
 const root = document.createElement('div');
+root.id = 'root';
 document.body.appendChild(root);
 
-const map = new WorldMap(MapSize.Large, 0.05);
+const rootNav = document.createElement('div');
+rootNav.id = 'root-nav';
+root.appendChild(rootNav);
+
+const rootContent = document.createElement('div');
+rootContent.id = 'root-content';
+root.appendChild(rootContent);
+
+const map = new WorldMapView(MapSize.Large, 0.04);
 renderMap();
 
 export function renderMap() {
@@ -11,9 +22,9 @@ export function renderMap() {
   // This is called when the user pans the map
   map.onViewUpdate = () => { renderMap() };
 
-  if (document.getElementById('map')) {
-    root.replaceChild(map.view(), document.getElementById('map'));
+  if (document.getElementById(WorldMapView.id)) {
+    rootContent.replaceChild(map.render(), document.getElementById(WorldMapView.id));
   } else {
-    root.appendChild(map.view());
+    rootContent.appendChild(map.render());
   }
 }

@@ -1,26 +1,90 @@
+/* GENERAL STYLE */
+
 body {
   background-color: rgb(31, 32, 46);
   color: rgb(220, 219, 205);
+
+  display: flex;
+  /* Center the UI on the screen */
+  justify-content: center;
 }
 
-.map-container {
-  background-color: rgb(49, 51, 68);
-  width: 600px;
-  height: 600px;
+button {
+  background-color: gray;
+  border: 2px solid rgb(35, 35, 64);
+  height: 32px;
 }
 
-.map-row {
+#root-nav {
   height: 60px;
+
+  border-left: 3px solid gray;
+  border-top: 3px solid gray;
+  border-right: 3px solid gray;
 }
 
-.map-cell.plains {
+#root-content {
+
+}
+
+/* WORLD MAP */
+
+#world-map-container {
+  background-color: rgb(49, 51, 68);
+  display: flex;
+  /* Force world map to fill the view */
+  justify-content: stretch;
+}
+
+#world-map {
+  /* Fix the size of the world map */
+  width: 512px;
+  height: 512px;
+  padding: 16px;
+
+  border-left: 3px solid gray;
+  border-top: 3px solid gray;
+  border-bottom: 3px solid gray;
+
+  /* Sets the height for rows */
+  display: flex;
+  flex-direction: column;
+}
+
+.world-map-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  flex: 1;
+}
+
+.world-map-cell {
+  flex: 1;
+}
+
+/* WORLD MAP CONTROLS */
+
+#world-map-controls {
+  width: 200px;
+
+  border: 3px solid gray;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.world-map-cell.plains {
   background-color: green;
 }
 
-.map-cell.mountain {
+.world-map-cell.mountain {
   background-color: gray;
 }
 
-.map-cell.water {
+.world-map-cell.water {
   background-color: blue;
 }
