@@ -14,7 +14,7 @@ const rootContent = document.createElement('div');
 rootContent.id = 'root-content';
 root.appendChild(rootContent);
 
-const map = new WorldMapView(MapSize.Large, 0.04);
+const map = new WorldMapView(MapSize.Small, 0.04);
 map.onViewUpdate = () => { renderMap() };
 renderMap();
 

@@ -1,5 +1,7 @@
 import { Alea } from "../../node_modules/alea/alea";
-import { createNoise2D } from "../../node_modules/simplex-noise/dist/esm/simplex-noise"
+import { createNoise2D, NoiseFunction2D } from "../../node_modules/simplex-noise/dist/esm/simplex-noise"
+import Random from "../util/random";
+import Settlement from "./settlement";
 
 /**
  * Enumeration of different world map sizes
@@ -10,7 +12,7 @@ export enum MapSize {
   Large = 256
 }
 
-export enum TerrainType {
+export enum TileType {
   Plains = "plains",
   Mountain = "mountain",
   Water = "water"
@@ -23,8 +25,19 @@ export class WorldMap {
   seed: number;
   size: number;
   scale: number;
-  terrain: TerrainType[][];
 
+  /**
+   * Map data
+   */
+  terrain: TileType[][];
+  settlements = new Map<number, Settlement>();
+
+  /**
+   * Random number generator
+   */
+  rng: Random;
+  rng2D: NoiseFunction2D;
+    
   /**
    * Initializes a new instance of the world map
    * @param size Size of the map
@@ -42,27 +55,60 @@ export class WorldMap {
     this.generate();
   }
 
+  clear() {
+    this.terrain = [];
+    this.settlements.clear();
+  }
+
   generate() {
     console.log(`Generating new map (size: ${this.size}, seed: ${this.seed})`);
 
-    const prng = Alea(this.seed);
-    const noise = createNoise2D(prng);
-    
+    this.clear();
+
+    // Reset the RNG
+    this.rng = new Random(this.seed);
+    this.rng2D = createNoise2D(Alea(this.seed));
+
+    this.generateTerrain();
+    this.generateSettlements();
+  }
+
+
+  generateTerrain() {
+    console.log('Generating terrain...');
     this.terrain = []
     for (var y = 0; y < this.size; y++) {
-      const row: TerrainType[] = [];
+      const row: TileType[] = [];
 
       for (var x = 0; x < this.size; x++) {
-        const value = 0.5 * (noise(this.scale * x, this.scale * y) + 1);
+        const value = 0.5 * (this.rng2D(this.scale * x, this.scale * y) + 1);
         if (value > 0.80) {
-          row.push(TerrainType.Mountain);
+          row.push(TileType.Mountain);
         } else if (value > 0.35) {
-          row.push(TerrainType.Plains);
+          row.push(TileType.Plains);
         } else {
-          row.push(TerrainType.Water);
+          row.push(TileType.Water);
         }
       }
       this.terrain.push(row);
     }
+    console.log('Done');
+  }
+
+  generateSettlements() {
+    console.log('Generating settlements...');
+    const target = 20;
+    let count = 0;
+    while (count < target) {
+      const x = this.rng.nextInt(0, this.size);
+      const y = this.rng.nextInt(0, this.size);
+      const k = (y * this.size) + x;
+      if (this.terrain[y][x] === TileType.Plains && !this.settlements.has(k)) {
+        this.settlements.set(k, new Settlement());
+        count++;
+      }
+    }
+
+    console.log('Done');
   }
 }

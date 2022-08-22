@@ -105,6 +105,11 @@ button {
 
 /* WORLD MAP CELLS */
 
+.world-map-cell {
+  font-family: sans-serif;
+  font-size: 8pt;
+}
+
 .world-map-cell.plains {
   background-color: green;
 }
@@ -115,4 +120,8 @@ button {
 
 .world-map-cell.water {
   background-color: blue;
+}
+
+.world-map-cell.settlement {
+  background-color: black;
 }

@@ -42,6 +42,8 @@ export class WorldMapView {
     const mapElement = document.createElement('div');
     mapElement.id = 'world-map';
 
+    console.log(this.map.settlements);
+
     // Add the map rows
     for(var y = this.viewOffset.y; y < this.viewSize + this.viewOffset.y; y++) {
       const row = document.createElement('div');
@@ -50,12 +52,20 @@ export class WorldMapView {
 
       // Add the map cells
       for(var x = this.viewOffset.x; x < Math.min(this.viewSize + this.viewOffset.x, this.map.size); x++) {
-        const terrain = this.map.terrain[y][x];
+        const k = (y * this.map.size) + x;
         const cell = document.createElement('div');
-        cell.id = `world-map-cell-${y}-${x}`;
-        cell.className = `world-map-cell ${terrain}`;
-        //cellElement.innerHTML = `${y}-${x}`;
-        cell.onclick = () => console.log(terrain);
+        cell.id = `world-map-cell-${x}-${y}`;
+        //cell.innerHTML = `${x},${y}`;
+
+        if (this.map.settlements.has(k)) {
+          cell.className = `world-map-cell settlement`;
+          cell.onclick = () => console.log('Settlement');
+        } else {
+          const terrain = this.map.terrain[y][x];
+          cell.className = `world-map-cell ${terrain}`;
+          cell.onclick = () => console.log(terrain);
+        }
+        
         row.appendChild(cell);
       }
   
