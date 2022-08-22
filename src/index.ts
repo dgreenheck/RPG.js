@@ -15,13 +15,10 @@ rootContent.id = 'root-content';
 root.appendChild(rootContent);
 
 const map = new WorldMapView(MapSize.Large, 0.04);
+map.onViewUpdate = () => { renderMap() };
 renderMap();
 
 export function renderMap() {
-  // Hook up the on view update method to re-render the map
-  // This is called when the user pans the map
-  map.onViewUpdate = () => { renderMap() };
-
   if (document.getElementById(WorldMapView.id)) {
     rootContent.replaceChild(map.render(), document.getElementById(WorldMapView.id));
   } else {

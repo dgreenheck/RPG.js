@@ -1,6 +1,12 @@
 /* GENERAL STYLE */
 
+@font-face {
+  font-family: Augusta-Regular;
+  src: url("./fonts/Augusta.ttf");
+}
+
 body {
+  font-family: Augusta-Regular, sans-serif;
   background-color: rgb(31, 32, 46);
   color: rgb(220, 219, 205);
 
@@ -10,9 +16,11 @@ body {
 }
 
 button {
-  background-color: gray;
+  font-family: Augusta-Regular, sans-serif;
+  font-size: 16pt;
+  background-color: rgb(232, 226, 196);
   border: 2px solid rgb(35, 35, 64);
-  height: 32px;
+  height: 40px;
 }
 
 #root-nav {
@@ -21,10 +29,6 @@ button {
   border-left: 3px solid gray;
   border-top: 3px solid gray;
   border-right: 3px solid gray;
-}
-
-#root-content {
-
 }
 
 /* WORLD MAP */
@@ -65,7 +69,9 @@ button {
 /* WORLD MAP CONTROLS */
 
 #world-map-controls {
-  width: 200px;
+  font-family: Augusta-Regular, sans-serif;
+
+  width: 300px;
 
   border: 3px solid gray;
   padding: 16px;
@@ -76,6 +82,28 @@ button {
   align-items: stretch;
   gap: 4px;
 }
+
+#world-map-controls .input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#world-map-controls label {
+  font-size: 16pt;
+}
+
+#world-map-controls input {
+  font-family: Augusta-Regular, sans-serif;
+  font-size: 16pt;
+
+  background-color: rgb(232, 226, 196);
+  min-width: 0px;
+  height: 24px;
+}
+
+/* WORLD MAP CELLS */
 
 .world-map-cell.plains {
   background-color: green;

@@ -1,4 +1,12 @@
 import { MapSize, WorldMap } from "../models/worldMap";
+import UI from "./ui";
+
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right
+}
 
 export class WorldMapView {
 
@@ -61,71 +69,51 @@ export class WorldMapView {
     const controls = document.createElement('div');
     controls.id = 'world-map-controls';
 
-    controls.appendChild(this.createButton(
-      'Generate Map',
-      () => { this.map.generate() }));
+    UI.addNumericInput('Seed', this.map.seed, 0, 32768, controls);
 
-    controls.appendChild(this.createButton(
-      'Pan Left',
-      () => { this.panLeft() }));
+    UI.addButton('Generate Map', () => { this.regenerateMap() }, controls);
 
-    controls.appendChild(this.createButton(
-      'Pan Right', 
-      () => { this.panRight() }));
-    
-    controls.appendChild(this.createButton(
-      'Pan Down', 
-      () => { this.panDown() }));
+    UI.addButton('Pan Left', () => { this.pan(Direction.Left) }, controls);
+    UI.addButton('Pan Right', () => { this.pan(Direction.Right) }, controls);
+    UI.addButton('Pan Down', () => { this.pan(Direction.Down) }, controls);
+    UI.addButton('Pan Up', () => { this.pan(Direction.Up) }, controls);
 
-    controls.appendChild(this.createButton(
-      'Pan Up',  
-      () => { this.panUp() }));
+    UI.addButton('Zoom In', () => { this.zoomIn() }, controls);
+    UI.addButton('Zoom Out', () => { this.zoomOut() }, controls);
+    UI.addButton('Reset Zoom', () => { this.resetZoom() }, controls);
 
-    controls.appendChild(this.createButton(
-      'Zoom In', 
-      () => { this.zoomIn() }));
-
-    controls.appendChild(this.createButton(
-      'Zoom Out',
-      () => { this.zoomOut() }));
-    controls.appendChild(this.createButton(
-      'Reset Zoom',
-      () => { this.resetZoom() }));
-    
     return controls;
-  }
-  
-  createButton(title: string, onClickEvent: () => void): HTMLButtonElement {
-    const button = document.createElement('button');
-    button.setAttribute('style', 'display: block');
-    button.innerHTML = title;
-    button.addEventListener('click', onClickEvent);
-    button.addEventListener('click', this.onViewUpdate);
-    return button
   }
 
   /* MAP CONTROLS */
   
-  panLeft() {
-    this.viewOffset.x--;
-    this.validateViewOffsets();
+  regenerateMap() {
+    console.log('Regenerating map...');
+    this.map.seed = Number((document.getElementById('seed') as HTMLInputElement).value);
+    this.map.generate() 
+    this.onViewUpdate();
   }
 
-  panRight() {
-    this.viewOffset.x++;
-    this.validateViewOffsets();
-  }
+  pan(direction: Direction) {
+    let delta = {x: 0, y: 0};
+    switch (direction) {
+      case Direction.Left:
+        delta.x = -this.viewSize / this.minViewSize; break;
+      case Direction.Right:
+        delta.x = this.viewSize / this.minViewSize; break;
+      case Direction.Up:
+        delta.y = -this.viewSize / this.minViewSize; break;
+      case Direction.Down:
+        delta.y = this.viewSize / this.minViewSize; break;
+    }
 
-  panUp() {
-    this.viewOffset.y--;
+    this.viewOffset.x += delta.x;
+    this.viewOffset.y += delta.y;
+    
     this.validateViewOffsets();
+    this.onViewUpdate();
+    console.log(`Pan: Delta(${delta.x}, ${delta.y}), Offset: (${this.viewOffset.x}, ${this.viewOffset.y})`);
   }
-
-  panDown() {
-    this.viewOffset.y++;
-    this.validateViewOffsets();
-  }
-
 
   resetZoom() {
     this.viewSize = this.defaultViewSize;
@@ -137,6 +125,9 @@ export class WorldMapView {
       this.viewSize /= 2.0;
       this.validateViewOffsets();
       this.onViewUpdate();
+      console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
+    } else {
+      console.log(`At Maximum Zoom`);
     }
   }
 
@@ -145,6 +136,9 @@ export class WorldMapView {
       this.viewSize *= 2.0;
       this.validateViewOffsets();
       this.onViewUpdate();
+      console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
+    } else {
+      console.log(`At Minimum Zoom`);
     }
   }
 

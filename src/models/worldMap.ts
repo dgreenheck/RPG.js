@@ -20,24 +20,32 @@ export enum TerrainType {
  * Object representing the world map data
  */
 export class WorldMap {
+  seed: number;
   size: number;
   scale: number;
   terrain: TerrainType[][];
 
   /**
    * Initializes a new instance of the world map
-   * @param rows Number of rows
-   * @param columns Number of columns
+   * @param size Size of the map
    * @param scale Scale used for the terrain generation function
+   * @param seed The seed value used for the RNG
    */
-  constructor(size: number, scale: number = 0.2) {
+  constructor(
+    size: number, 
+    scale: number = 0.2, 
+    seed: number = 0
+  ) {
     this.size = size;
     this.scale = scale;
+    this.seed = seed
     this.generate();
   }
 
   generate() {
-    const prng = Alea('seed');
+    console.log(`Generating new map (size: ${this.size}, seed: ${this.seed})`);
+
+    const prng = Alea(this.seed);
     const noise = createNoise2D(prng);
     
     this.terrain = []
