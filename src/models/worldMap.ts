@@ -3,15 +3,6 @@ import { createNoise2D, NoiseFunction2D } from "../../node_modules/simplex-noise
 import Random from "../util/random";
 import Settlement from "./settlement";
 
-/**
- * Enumeration of different world map sizes
- */
-export enum MapSize {
-  Small = 64,
-  Medium = 128,
-  Large = 256
-}
-
 export enum TileType {
   Plains = "plains",
   Mountain = "mountain",
