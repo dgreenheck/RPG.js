@@ -33,31 +33,45 @@ button {
   font-size: 16pt;
   background-color: rgb(232, 226, 196);
   border: 2px solid rgb(35, 35, 64);
-  height: 40px;
 }
 
-spacer {
+.spacer {
   flex: 1 0;
+  height: 0px;
 }
 
 /* NAV BAR */
 
 #nav-bar {
-  flex: 0 0 72px;
+  flex: 0 0 40px;
 
   border-left: 3px solid gray;
   border-top: 3px solid gray;
   border-right: 3px solid gray;
 
+  /* Have nav bar buttons fill the available space evenly */
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 8px;
+
+  padding: 8px;
+}
+
+.nav-bar-button {
+  flex: 1 0;
 }
 
 /* WORLD MAP */
 
 #world-map-container {
+  /* Fill the parent container */
+  width: 100%;
+  height: 100%;
+
   background-color: rgb(49, 51, 68);
+
+  /* Use flexbox to have map and controls side-by-side */
   display: flex;
 }
 
@@ -66,6 +80,7 @@ spacer {
   border-top: 3px solid gray;
   border-bottom: 3px solid gray;
 
+  /* Logic to have rows evenly fill the available vertical space */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -73,34 +88,35 @@ spacer {
 }
 
 .world-map-row {
+  /* Cells evenly fill row */
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+
+  /* Rows evenly fill vertical space */
   flex: 1 0;
-  height: 0;
 }
 
 .world-map-cell {
   font-family: sans-serif;
   font-size: 8pt;
 
+  /* Cells evenly fill available horizontal space */
   flex: 1 0;
-  width: 0;
 }
 
-/* WORLD MAP CONTROLS */
+/* ========== WORLD MAP CONTROLS =============== */
 
 #world-map-controls {
   font-family: Augusta-Regular, sans-serif;
 
-  width: 250px;
+  width: 200px;
 
   border: 3px solid gray;
   padding: 16px;
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
   gap: 4px;
 }
@@ -114,14 +130,21 @@ spacer {
 
 #world-map-controls label {
   font-size: 16pt;
+
+  /* Take up 50% of width of parent */
+  flex: 1 0;
 }
 
 #world-map-controls input {
-  font-family: Augusta-Regular, sans-serif;
-  font-size: 16pt;
+  /* Take up 50% of width of parent */
+  width: 0px;
+  flex: 1 0;
 
   background-color: rgb(232, 226, 196);
-  min-width: 0px;
+  font-family: Augusta-Regular, sans-serif;
+  font-size: 14pt;
+  text-align: center;
+
   height: 24px;
 }
 

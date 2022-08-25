@@ -8,6 +8,14 @@ enum Direction {
   Right
 }
 
+enum MapSize {
+  tiny = 32,
+  small = 64,
+  medium = 128,
+  large = 256,
+  massive = 512
+}
+
 export class WorldMapView extends BaseView {
 
   static rootId = 'world-map-container';
@@ -44,7 +52,11 @@ export class WorldMapView extends BaseView {
     UI.redrawView(WorldMapView.mapElementId, this.mapView());
   }
 
-  mapView() {
+  /**
+   * Generates the world map HTML elements
+   * @returns the root HTML element of the world map view.
+   */
+  mapView(): HTMLElement {
     const view = UI.container('world-map');
 
     // Add the map rows
@@ -78,6 +90,10 @@ export class WorldMapView extends BaseView {
     return view;
   }
 
+  /**
+   * Generates the world map controls HTML elements
+   * @returns the root HTML element of the world map controls view.
+   */
   mapControlsView(): HTMLElement {
     const view = UI.container('world-map-controls');
 
@@ -100,7 +116,7 @@ export class WorldMapView extends BaseView {
     return view;
   }
 
-  /* MAP CONTROLS */
+  /* EVENT HOOKS */
   
   regenerateMap() {
     console.log('Regenerating map...');
