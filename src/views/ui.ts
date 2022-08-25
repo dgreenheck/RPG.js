@@ -1,21 +1,31 @@
 export interface RenderComponent {
   id: string
-  parentView: HTMLElement;
-  rootView: HTMLElement;
+  parentView: BaseView;
+  rootElement: HTMLElement;
   setup: () => void;
   render: () => void;
 }
 
 export class BaseView implements RenderComponent {
   id: string;
-  parentView: HTMLElement;
-  rootView: HTMLElement;
+  parentView: BaseView;
+  rootElement: HTMLElement;
 
-  constructor(id: string, parentView: HTMLElement) {
+  constructor(id: string, parentView: BaseView = null) {
     this.id = id;
-    this.rootView = UI.container(this.id);
-    this.parentView = parentView;
-    this.parentView.appendChild(this.rootView);
+    this.rootElement = UI.container(this.id);
+    if (document.getElementById(id)) {
+      document.getElementById(id).replaceWith(this.rootElement);
+      console.log(`REPLACE '${id}'`);
+    } else if (parentView != null) {
+      this.parentView = parentView;
+      this.parentView.rootElement.appendChild(this.rootElement);
+      console.log(`CHILD '${id}' TO '${this.parentView.rootElement.id}'`);
+    } else {
+      this.parentView = null;
+      document.body.appendChild(this.rootElement);
+      console.log(`CHILD '${id}' to body`);
+    }
   }
 
   setup() {}
@@ -40,7 +50,15 @@ export class UI {
 
   static button(title: string, onClickEvent: () => void): HTMLButtonElement {
     const button = document.createElement('button');
-    button.setAttribute('style', 'display: block');
+    button.className = 'button';
+    button.innerHTML = title;
+    button.addEventListener('click', onClickEvent);
+    return button;
+  }
+
+  static navBarButton(title: string, onClickEvent: () => void): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.className = 'nav-bar-button';
     button.innerHTML = title;
     button.addEventListener('click', onClickEvent);
     return button;
@@ -71,6 +89,12 @@ export class UI {
     container.append(input);
 
     return container;
+  }
+
+  static spacer() {
+    const button = document.createElement('div');
+    button.className = 'spacer';
+    return button;
   }
 }
 

@@ -10,10 +10,10 @@ enum Direction {
 
 export class WorldMapView extends BaseView {
 
-  static mapElementContainerId = 'world-map-container';
+  static rootId = 'world-map-container';
   static mapElementId = 'world-map';
 
-  map: WorldMap;
+  worldMap: WorldMap;
   minViewSize = 8;
   maxViewSize = 128;
   defaultViewSize = 16;
@@ -21,24 +21,23 @@ export class WorldMapView extends BaseView {
   viewOffset = { x: 0, y: 0 };
 
   // Inherited members
-  parentView: HTMLElement;
-  rootView: HTMLElement
+  parentView: BaseView;
+  rootElement: HTMLElement
 
   /**
    * Creates a new world map view and adds it to the parent.
-   * @param size Size of the map
-   * @param scale The scale of the terrain features
-   * @param parent The parent element that will contain the root element of this view.
+   * @param worldMap World map data model
+   * @param parentView The parent view that will contain the root element of this view.
    */
-  constructor(size: number, scale: number = 1.0, parent: HTMLElement) {
-    super(WorldMapView.mapElementContainerId, parent);
-    this.map = new WorldMap(size, scale);
+  constructor(worldMap: WorldMap, parentView: BaseView) {
+    super(WorldMapView.rootId, parentView);
+    this.worldMap = worldMap;
     this.setup();
   }
 
   setup() {
-    this.rootView.append(this.mapView());
-    this.rootView.append(this.mapControlsView());
+    this.rootElement.append(this.mapView());
+    this.rootElement.append(this.mapControlsView());
   }
 
   render() {
@@ -55,17 +54,17 @@ export class WorldMapView extends BaseView {
       row.className = 'world-map-row';
 
       // Add the map cells
-      for(var x = this.viewOffset.x; x < Math.min(this.viewSize + this.viewOffset.x, this.map.size); x++) {
-        const k = (y * this.map.size) + x;
+      for(var x = this.viewOffset.x; x < Math.min(this.viewSize + this.viewOffset.x, this.worldMap.size); x++) {
+        const k = (y * this.worldMap.size) + x;
         const cell = document.createElement('div');
         cell.id = `world-map-cell-${x}-${y}`;
         //cell.innerHTML = `${x},${y}`;
 
-        if (this.map.settlements.has(k)) {
+        if (this.worldMap.settlements.has(k)) {
           cell.className = `world-map-cell settlement`;
           cell.onclick = () => console.log('Settlement');
         } else {
-          const terrain = this.map.terrain[y][x];
+          const terrain = this.worldMap.terrain[y][x];
           cell.className = `world-map-cell ${terrain}`;
           cell.onclick = () => console.log(terrain);
         }
@@ -82,8 +81,8 @@ export class WorldMapView extends BaseView {
   mapControlsView(): HTMLElement {
     const view = UI.container('world-map-controls');
 
-    view.append(UI.numericInput('Map Size', this.map.size, 16, 256));
-    view.append(UI.numericInput('Seed', this.map.seed, 0, 32768));
+    view.append(UI.numericInput('Map Size', this.worldMap.size, 16, 256));
+    view.append(UI.numericInput('Seed', this.worldMap.seed, 0, 32768));
 
     view.append(UI.button('Generate Map', () => { this.regenerateMap() }));
 
@@ -96,6 +95,8 @@ export class WorldMapView extends BaseView {
     view.append(UI.button('Zoom Out', () => { this.zoomOut() }));
     view.append(UI.button('Reset Zoom', () => { this.resetZoom() }));
 
+    view.append(UI.spacer());
+
     return view;
   }
 
@@ -105,9 +106,9 @@ export class WorldMapView extends BaseView {
     console.log('Regenerating map...');
     this.viewSize = 16;
     this.viewOffset = { x: 0, y: 0 };
-    this.map.size = Number((document.getElementById('map-size') as HTMLInputElement).value);
-    this.map.seed = Number((document.getElementById('seed') as HTMLInputElement).value);
-    this.map.generate() 
+    this.worldMap.size = Number((document.getElementById('map-size') as HTMLInputElement).value);
+    this.worldMap.seed = Number((document.getElementById('seed') as HTMLInputElement).value);
+    this.worldMap.generate() 
     this.render();
   }
 
@@ -149,7 +150,7 @@ export class WorldMapView extends BaseView {
   }
 
   zoomOut() {
-    if (this.viewSize < Math.min(this.map.size, this.maxViewSize)) {
+    if (this.viewSize < Math.min(this.worldMap.size, this.maxViewSize)) {
       this.viewSize *= 2.0;
       this.validateViewOffsets();
       this.render();
@@ -163,17 +164,17 @@ export class WorldMapView extends BaseView {
     if (this.viewOffset.x < 0) {
       console.log("Reached end of map")
       this.viewOffset.x = 0;
-    } else if (this.viewOffset.x > (this.map.size - this.viewSize)) {
+    } else if (this.viewOffset.x > (this.worldMap.size - this.viewSize)) {
       console.log("Reached end of map")
-      this.viewOffset.x = this.map.size - this.viewSize;
+      this.viewOffset.x = this.worldMap.size - this.viewSize;
     }
 
     if (this.viewOffset.y < 0) {
       console.log("Reached end of map")
       this.viewOffset.y = 0;
-    } else if (this.viewOffset.y > (this.map.size - this.viewSize)) {
+    } else if (this.viewOffset.y > (this.worldMap.size - this.viewSize)) {
       console.log("Reached end of map")
-      this.viewOffset.y = this.map.size - this.viewSize;
+      this.viewOffset.y = this.worldMap.size - this.viewSize;
     }
   }
 };
