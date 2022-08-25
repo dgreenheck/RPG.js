@@ -1,4 +1,29 @@
-export default class UI {
+export interface RenderComponent {
+  id: string
+  parentView: HTMLElement;
+  rootView: HTMLElement;
+  setup: () => void;
+  render: () => void;
+}
+
+export class BaseView implements RenderComponent {
+  id: string;
+  parentView: HTMLElement;
+  rootView: HTMLElement;
+
+  constructor(id: string, parentView: HTMLElement) {
+    this.id = id;
+    this.rootView = UI.container(this.id);
+    this.parentView = parentView;
+    this.parentView.appendChild(this.rootView);
+  }
+
+  setup() {}
+  render() {}
+  getRootElement(): HTMLElement { return null; }
+}
+
+export class UI {
 
   static redrawView(id: string, view: HTMLElement) {
     const oldView = document.getElementById(id);

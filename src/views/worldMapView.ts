@@ -1,5 +1,5 @@
 import { WorldMap } from "../models/worldMap";
-import UI from "./ui";
+import { BaseView, UI } from "./ui";
 
 enum Direction {
   Up,
@@ -8,37 +8,44 @@ enum Direction {
   Right
 }
 
-export class WorldMapView {
+export class WorldMapView extends BaseView {
 
-  // Public members
+  static mapElementContainerId = 'world-map-container';
+  static mapElementId = 'world-map';
+
   map: WorldMap;
-  root: HTMLElement
-  
-  // Private members
-  private minViewSize = 8;
-  private maxViewSize = 128;
-  private defaultViewSize = 16;
-  private viewSize = 16;
-  private viewOffset = { x: 0, y: 0 };
+  minViewSize = 8;
+  maxViewSize = 128;
+  defaultViewSize = 16;
+  viewSize = 16;
+  viewOffset = { x: 0, y: 0 };
 
+  // Inherited members
+  parentView: HTMLElement;
+  rootView: HTMLElement
+
+  /**
+   * Creates a new world map view and adds it to the parent.
+   * @param size Size of the map
+   * @param scale The scale of the terrain features
+   * @param parent The parent element that will contain the root element of this view.
+   */
   constructor(size: number, scale: number = 1.0, parent: HTMLElement) {
+    super(WorldMapView.mapElementContainerId, parent);
     this.map = new WorldMap(size, scale);
-    
-    // Setup the containers
-    this.root = UI.container('world-map-container');
-    parent.append(this.root);
-
-    this.#renderMap(false);
-    this.#renderControls();
+    this.setup();
   }
 
-  /* VIEW SETUP */
+  setup() {
+    this.rootView.append(this.mapView());
+    this.rootView.append(this.mapControlsView());
+  }
 
   render() {
-    this.#renderMap();
+    UI.redrawView(WorldMapView.mapElementId, this.mapView());
   }
 
-  #renderMap(redraw: Boolean = true) {
+  mapView() {
     const view = UI.container('world-map');
 
     // Add the map rows
@@ -69,14 +76,10 @@ export class WorldMapView {
       view.append(row);
     }
 
-    if (redraw) {
-      UI.redrawView(view.id, view);
-    } else {
-      this.root.append(view);
-    }
+    return view;
   }
 
-  #renderControls() {
+  mapControlsView(): HTMLElement {
     const view = UI.container('world-map-controls');
 
     view.append(UI.numericInput('Map Size', this.map.size, 16, 256));
@@ -93,7 +96,7 @@ export class WorldMapView {
     view.append(UI.button('Zoom Out', () => { this.zoomOut() }));
     view.append(UI.button('Reset Zoom', () => { this.resetZoom() }));
 
-    this.root.append(view);
+    return view;
   }
 
   /* MAP CONTROLS */
@@ -105,7 +108,7 @@ export class WorldMapView {
     this.map.size = Number((document.getElementById('map-size') as HTMLInputElement).value);
     this.map.seed = Number((document.getElementById('seed') as HTMLInputElement).value);
     this.map.generate() 
-    this.#renderMap();
+    this.render();
   }
 
   pan(direction: Direction) {
@@ -125,20 +128,20 @@ export class WorldMapView {
     this.viewOffset.y += delta.y;
     
     this.validateViewOffsets();
-    this.#renderMap();
+    this.render();
     console.log(`Pan: Delta(${delta.x}, ${delta.y}), Offset: (${this.viewOffset.x}, ${this.viewOffset.y})`);
   }
 
   resetZoom() {
     this.viewSize = this.defaultViewSize;
-    this.#renderMap();
+    this.render();
   }
 
   zoomIn() {
     if (this.viewSize > this.minViewSize) {
       this.viewSize /= 2.0;
       this.validateViewOffsets();
-      this.#renderMap();
+      this.render();
       console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
     } else {
       console.log(`At Maximum Zoom`);
@@ -149,7 +152,7 @@ export class WorldMapView {
     if (this.viewSize < Math.min(this.map.size, this.maxViewSize)) {
       this.viewSize *= 2.0;
       this.validateViewOffsets();
-      this.#renderMap();
+      this.render();
       console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
     } else {
       console.log(`At Minimum Zoom`);
