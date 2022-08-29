@@ -28,8 +28,8 @@ export class BaseView implements RenderComponent {
     }
   }
 
-  setup() {}
-  render() {}
+  setup(): void { return; }
+  render(): void { return; }
   getRootElement(): HTMLElement { return null; }
 }
 

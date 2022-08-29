@@ -1,8 +1,9 @@
-import Encounter from "../models/encounter";
-import { WorldMap } from "../models/worldMap";
-import { EncounterView } from "./encounterView";
-import { BaseView, UI } from "./ui";
-import { WorldMapView } from "./worldMapView";
+import Encounter from '../models/encounter';
+import { journal } from '../models/journal';
+import { WorldMap } from '../models/worldMap';
+import { JournalView } from './journalView';
+import { BaseView, UI } from './ui';
+import { WorldMapView } from './worldMapView';
 
 export class NavBarView extends BaseView {
 
@@ -18,7 +19,7 @@ export class NavBarView extends BaseView {
 
   // Inherited members
   parentView: BaseView;
-  rootElement: HTMLElement
+  rootElement: HTMLElement;
 
   /**
    * Creates a nav bar view
@@ -37,23 +38,25 @@ export class NavBarView extends BaseView {
   setup() {
     this.rootElement.appendChild(UI.navBarButton(
       'WORLD MAP', 
-      () => { this.selectWorldMap() }));
+      () => { this.switchToWorldMap(); }));
 
     this.rootElement.appendChild(UI.navBarButton(
-      'ENCOUNTER', 
-      () => { this.selectEncounter() }));
+      'JOURNAL', 
+      () => { this.switchToJournal(); }));
 
-    this.selectWorldMap();
+    this.switchToWorldMap();
   }
 
-  selectWorldMap() {
-    console.log("Selected World Map");
+  switchToWorldMap() {
+    console.log('Selected World Map');
+    journal.addEntry('Selected World Map');
     this.selectView(new WorldMapView(this.worldMap, this));
   }
 
-  selectEncounter() {
-    console.log("Selected Encounter");
-    this.selectView(new EncounterView(new Encounter(), this));
+  switchToJournal() {
+    console.log('Selected Journal');
+    journal.addEntry('Selected Journal');
+    this.selectView(new JournalView(this));
   }
 
   selectView(view: BaseView) {

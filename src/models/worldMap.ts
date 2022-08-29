@@ -1,12 +1,12 @@
-import { Alea } from "../../node_modules/alea/alea";
-import { createNoise2D, NoiseFunction2D } from "../../node_modules/simplex-noise/dist/esm/simplex-noise"
-import Random from "../util/random";
-import Settlement from "./settlement";
+import Alea from '../util/alea';
+import { createNoise2D, NoiseFunction2D } from '../../node_modules/simplex-noise/dist/esm/simplex-noise';
+import Random from '../util/random';
+import Settlement from './settlement';
 
 export enum TileType {
-  Plains = "plains",
-  Mountain = "mountain",
-  Water = "water"
+  Plains = 'plains',
+  Mountain = 'mountain',
+  Water = 'water'
 }
 
 /**
@@ -37,12 +37,12 @@ export class WorldMap {
    */
   constructor(
     size: number, 
-    scale: number = 0.2, 
-    seed: number = 0
+    scale = 0.2, 
+    seed = 0
   ) {
     this.size = size;
     this.scale = scale;
-    this.seed = seed
+    this.seed = seed;
     this.generate();
   }
 
@@ -67,11 +67,11 @@ export class WorldMap {
 
   generateTerrain() {
     console.log('Generating terrain...');
-    this.terrain = []
-    for (var y = 0; y < this.size; y++) {
+    this.terrain = [];
+    for (let y = 0; y < this.size; y++) {
       const row: TileType[] = [];
 
-      for (var x = 0; x < this.size; x++) {
+      for (let x = 0; x < this.size; x++) {
         const value = 0.5 * (this.rng2D(this.scale * x, this.scale * y) + 1);
         if (value > 0.80) {
           row.push(TileType.Mountain);

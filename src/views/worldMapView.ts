@@ -1,5 +1,5 @@
-import { WorldMap } from "../models/worldMap";
-import { BaseView, UI } from "./ui";
+import { WorldMap } from '../models/worldMap';
+import { BaseView, UI } from './ui';
 
 enum Direction {
   Up,
@@ -30,7 +30,7 @@ export class WorldMapView extends BaseView {
 
   // Inherited members
   parentView: BaseView;
-  rootElement: HTMLElement
+  rootElement: HTMLElement;
 
   /**
    * Creates a new world map view and adds it to the parent.
@@ -60,20 +60,20 @@ export class WorldMapView extends BaseView {
     const view = UI.container('world-map');
 
     // Add the map rows
-    for(var y = this.viewOffset.y; y < this.viewSize + this.viewOffset.y; y++) {
+    for(let y = this.viewOffset.y; y < this.viewSize + this.viewOffset.y; y++) {
       const row = document.createElement('div');
       row.id = `world-map-row-${y}`;
       row.className = 'world-map-row';
 
       // Add the map cells
-      for(var x = this.viewOffset.x; x < Math.min(this.viewSize + this.viewOffset.x, this.worldMap.size); x++) {
+      for(let x = this.viewOffset.x; x < Math.min(this.viewSize + this.viewOffset.x, this.worldMap.size); x++) {
         const k = (y * this.worldMap.size) + x;
         const cell = document.createElement('div');
         cell.id = `world-map-cell-${x}-${y}`;
         //cell.innerHTML = `${x},${y}`;
 
         if (this.worldMap.settlements.has(k)) {
-          cell.className = `world-map-cell settlement`;
+          cell.className = 'world-map-cell settlement';
           cell.onclick = () => console.log('Settlement');
         } else {
           const terrain = this.worldMap.terrain[y][x];
@@ -100,16 +100,16 @@ export class WorldMapView extends BaseView {
     view.append(UI.numericInput('Map Size', this.worldMap.size, 16, 256));
     view.append(UI.numericInput('Seed', this.worldMap.seed, 0, 32768));
 
-    view.append(UI.button('Generate Map', () => { this.regenerateMap() }));
+    view.append(UI.button('Generate Map', () => { this.regenerateMap(); }));
 
-    view.append(UI.button('Pan Left', () => { this.pan(Direction.Left) }));
-    view.append(UI.button('Pan Right', () => { this.pan(Direction.Right) }));
-    view.append(UI.button('Pan Down', () => { this.pan(Direction.Down) }));
-    view.append(UI.button('Pan Up', () => { this.pan(Direction.Up) }));
+    view.append(UI.button('Pan Left', () => { this.pan(Direction.Left); }));
+    view.append(UI.button('Pan Right', () => { this.pan(Direction.Right); }));
+    view.append(UI.button('Pan Down', () => { this.pan(Direction.Down); }));
+    view.append(UI.button('Pan Up', () => { this.pan(Direction.Up); }));
 
-    view.append(UI.button('Zoom In', () => { this.zoomIn() }));
-    view.append(UI.button('Zoom Out', () => { this.zoomOut() }));
-    view.append(UI.button('Reset Zoom', () => { this.resetZoom() }));
+    view.append(UI.button('Zoom In', () => { this.zoomIn(); }));
+    view.append(UI.button('Zoom Out', () => { this.zoomOut(); }));
+    view.append(UI.button('Reset Zoom', () => { this.resetZoom(); }));
 
     view.append(UI.spacer());
 
@@ -124,21 +124,21 @@ export class WorldMapView extends BaseView {
     this.viewOffset = { x: 0, y: 0 };
     this.worldMap.size = Number((document.getElementById('map-size') as HTMLInputElement).value);
     this.worldMap.seed = Number((document.getElementById('seed') as HTMLInputElement).value);
-    this.worldMap.generate() 
+    this.worldMap.generate();
     this.render();
   }
 
   pan(direction: Direction) {
-    let delta = {x: 0, y: 0};
+    const delta = { x: 0, y: 0 };
     switch (direction) {
-      case Direction.Left:
-        delta.x = -this.viewSize / this.minViewSize; break;
-      case Direction.Right:
-        delta.x = this.viewSize / this.minViewSize; break;
-      case Direction.Up:
-        delta.y = -this.viewSize / this.minViewSize; break;
-      case Direction.Down:
-        delta.y = this.viewSize / this.minViewSize; break;
+    case Direction.Left:
+      delta.x = -this.viewSize / this.minViewSize; break;
+    case Direction.Right:
+      delta.x = this.viewSize / this.minViewSize; break;
+    case Direction.Up:
+      delta.y = -this.viewSize / this.minViewSize; break;
+    case Direction.Down:
+      delta.y = this.viewSize / this.minViewSize; break;
     }
 
     this.viewOffset.x += delta.x;
@@ -161,7 +161,7 @@ export class WorldMapView extends BaseView {
       this.render();
       console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
     } else {
-      console.log(`At Maximum Zoom`);
+      console.log('At Maximum Zoom]');
     }
   }
 
@@ -172,25 +172,25 @@ export class WorldMapView extends BaseView {
       this.render();
       console.log(`Zoom In (View Size: ${this.viewSize}, Min: ${this.minViewSize}, Max: ${this.maxViewSize})`);
     } else {
-      console.log(`At Minimum Zoom`);
+      console.log('At Minimum Zoom');
     }
   }
 
   validateViewOffsets() {
     if (this.viewOffset.x < 0) {
-      console.log("Reached end of map")
+      console.log('Reached end of map');
       this.viewOffset.x = 0;
     } else if (this.viewOffset.x > (this.worldMap.size - this.viewSize)) {
-      console.log("Reached end of map")
+      console.log('Reached end of map');
       this.viewOffset.x = this.worldMap.size - this.viewSize;
     }
 
     if (this.viewOffset.y < 0) {
-      console.log("Reached end of map")
+      console.log('Reached end of map');
       this.viewOffset.y = 0;
     } else if (this.viewOffset.y > (this.worldMap.size - this.viewSize)) {
-      console.log("Reached end of map")
+      console.log('Reached end of map');
       this.viewOffset.y = this.worldMap.size - this.viewSize;
     }
   }
-};
+}

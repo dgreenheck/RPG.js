@@ -1,6 +1,5 @@
-import { WorldMapView } from "./worldMapView";
-import { BaseView, UI } from "./ui";
-import { NavBarView } from "./navBarView";
+import { BaseView } from './ui';
+import { NavBarView } from './navBarView';
 
 export class RootView extends BaseView {
 
@@ -11,7 +10,7 @@ export class RootView extends BaseView {
 
   // Inherited members
   parentView: BaseView;
-  rootElement: HTMLElement
+  rootElement: HTMLElement;
 
   constructor() {
     super(RootView.rootId);
@@ -26,7 +25,7 @@ export class RootContentView extends BaseView {
 
   // Inherited members
   parentView: BaseView;
-  rootElement: HTMLElement
+  rootElement: HTMLElement;
 
   constructor(parentView: BaseView) {
     super(RootContentView.rootId, parentView);

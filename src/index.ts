@@ -1,3 +1,3 @@
-import { RootView } from "./views/rootView";
+import { RootView } from './views/rootView';
 
-const rootView = new RootView()
+const rootView = new RootView();
